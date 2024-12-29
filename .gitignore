@@ -1,0 +1,9 @@
+build/
+lib/
+include/
+
+.clang-format
+
+.cache/
+.vs/
+.vscode/
