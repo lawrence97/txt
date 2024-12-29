@@ -1,8 +1,15 @@
-#include <stdio.h>
+#include "txt.h"
 
 int main(void) {
 
-  printf("a\n");
+	Txt txt;
 
-  return 0;
+	if (initialiseTxt(&txt) < 0) {
+		return -1;
+	}
+
+	runTxt(&txt);
+	shutdownTxt(&txt);
+
+	return 0;
 }
