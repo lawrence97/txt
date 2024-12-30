@@ -4,6 +4,7 @@ include/
 
 .clang-format
 
+.ignore/
 .cache/
 .vs/
 .vscode/

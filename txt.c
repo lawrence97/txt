@@ -1,13 +1,33 @@
 #include "txt.h"
+#include "util.h"
 
 #define WIDTH 500
 #define HEIGHT 500
+
+#ifndef RES_DIR
+#define RES_DIR "./"
+#endif
+
+#define SHADER "shader.glsl"
+#define TEXTURE "font.png"
 
 int initialiseTxt(Txt *txt) {
 
 	txt->window = newWindow(WIDTH, HEIGHT, "txt");
 	if (txt->window == NULL) {
 		return -1;
+	}
+
+	txt->shader = newShader(RES_DIR SHADER);
+	if (txt->shader == 0) {
+		shutdownTxt(txt);
+		return -2;
+	}
+
+	txt->texture = newTexture(RES_DIR TEXTURE);
+	if (txt->texture == 0) {
+		shutdownTxt(txt);
+		return -3;
 	}
 
 	return 0;
@@ -32,8 +52,20 @@ void runTxt(Txt *txt) {
 
 void shutdownTxt(Txt *txt) {
 
-	destroyWindow(txt->window);
-	txt->window = NULL;
+	if (txt->texture != 0) {
+		destroyTexture(txt->texture);
+		txt->texture = 0;
+	}
+
+	if (txt->shader != 0) {
+		destroyShader(txt->shader);
+		txt->shader = 0;
+	}
+
+	if (txt->window != NULL) {
+		destroyWindow(txt->window);
+		txt->window = NULL;
+	}
 
 	return;
 }

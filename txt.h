@@ -4,6 +4,8 @@
 
 typedef struct {
 	GLFWwindow *window;
+	GLuint shader;
+	GLuint texture;
 } Txt;
 
 int initialiseTxt(Txt *txt);
