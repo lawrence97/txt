@@ -24,7 +24,7 @@ int initialiseTxt(Txt *txt) {
 		return -3;
 	}
 
-	txt->batch = newBatch(MAX_CHARACTERS);
+	txt->batch = newBatch(MAX_CHARACTERS, txt->shader);
 
 	return 0;
 }
@@ -36,12 +36,11 @@ void runTxt(Txt *txt) {
 
 	glClearColor(.2f, .2f, .3f, 1.0f);
 	glViewport(0, 0, WIDTH, HEIGHT);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	char *str = "text";
-	char *str2 = "longtext";
-	newString(&_batch, str, strlen(str));
-	clearBatch(&_batch);
-	newString(&_batch, str2, strlen(str2));
+	char *str = "long\ttab\na[text]b";
+	stringBatch(&_batch, str, strlen(str));
 	updateBatch(&_batch);
 
 	while (!glfwWindowShouldClose(_window)) {

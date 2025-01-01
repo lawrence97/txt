@@ -15,3 +15,12 @@
 
 /* maximum number of character instances in one draw */
 #define MAX_CHARACTERS 500
+
+/* debug */
+#define PRINT false
+
+/* type -> index of colour in shader */
+typedef enum {
+	PLAIN = 0,
+	SURROUND = 1,
+} TYPE;

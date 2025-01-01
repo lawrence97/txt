@@ -3,7 +3,7 @@
 
 static Character chars[MAX_CHARACTERS];
 
-Batch newBatch(size_t capacity) {
+Batch newBatch(size_t capacity, GLuint shader) {
 
 	Batch bat = {0};
 
@@ -13,6 +13,13 @@ Batch newBatch(size_t capacity) {
 
 	glBindVertexArray(bat.vao);
 
+	GLuint attribVertex = glGetAttribLocation(shader, "vertex");
+	GLuint attribValue = glGetAttribLocation(shader, "value");
+	GLuint attribType = glGetAttribLocation(shader, "type");
+	GLuint attribLine = glGetAttribLocation(shader, "line");
+	GLuint attribTab = glGetAttribLocation(shader, "tab");
+	GLuint attribOffset = glGetAttribLocation(shader, "offset");
+
 	Vector vertices[6] = {
 		{.x = .0f, .y = .0f},	 {.x = 1.0f, .y = .0f},	 {.x = 1.0f, .y = -1.0f},
 		{.x = 1.0f, .y = -1.0f}, {.x = .0f, .y = -1.0f}, {.x = .0f, .y = .0f},
@@ -21,25 +28,37 @@ Batch newBatch(size_t capacity) {
 	glBindBuffer(GL_ARRAY_BUFFER, bat.vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vector), (void *)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribDivisor(0, 0);
+	glVertexAttribPointer(attribVertex, 2, GL_FLOAT, GL_FALSE, sizeof(Vector), (void *)0);
+	glEnableVertexAttribArray(attribVertex);
+	glVertexAttribDivisor(attribVertex, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, bat.bbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Batch) * capacity, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Character) * capacity, NULL, GL_DYNAMIC_DRAW);
 
-	glVertexAttribIPointer(1, 1, GL_UNSIGNED_BYTE, sizeof(Batch), (void *)(sizeof(unsigned int) * 0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribDivisor(1, 1);
+	glVertexAttribIPointer(attribValue, 1, GL_INT, sizeof(Character), (void *)(sizeof(int) * 0));
+	glEnableVertexAttribArray(attribValue);
+	glVertexAttribDivisor(attribValue, 1);
 
-	glVertexAttribIPointer(2, 1, GL_UNSIGNED_BYTE, sizeof(Batch), (void *)(sizeof(unsigned int) * 1));
-	glEnableVertexAttribArray(2);
-	glVertexAttribDivisor(2, 1);
+	glVertexAttribIPointer(attribType, 1, GL_INT, sizeof(Character), (void *)(sizeof(int) * 1));
+	glEnableVertexAttribArray(attribType);
+	glVertexAttribDivisor(attribType, 1);
+
+	glVertexAttribIPointer(attribLine, 1, GL_INT, sizeof(Character), (void *)(sizeof(int) * 2));
+	glEnableVertexAttribArray(attribLine);
+	glVertexAttribDivisor(attribLine, 1);
+
+	glVertexAttribIPointer(attribTab, 1, GL_INT, sizeof(Character), (void *)(sizeof(int) * 3));
+	glEnableVertexAttribArray(attribTab);
+	glVertexAttribDivisor(attribTab, 1);
+
+	glVertexAttribIPointer(attribOffset, 1, GL_INT, sizeof(Character), (void *)(sizeof(int) * 4));
+	glEnableVertexAttribArray(attribOffset);
+	glVertexAttribDivisor(attribOffset, 1);
 
 	return bat;
 }
 
-void newString(Batch *batch, char *string, size_t size) {
+void stringBatch(Batch *batch, char *string, size_t size) {
 
 	Character c = {0};
 
@@ -47,10 +66,42 @@ void newString(Batch *batch, char *string, size_t size) {
 		size = MAX_CHARACTERS;
 	}
 
+	int type = PLAIN;
+	int line = 0;
+	int tab = 0;
+	int offset = 0;
+
 	for (int i = 0; i < size; i++) {
+
+		/* --- pre character checks */
+
 		c.value = string[i];
-		c.type = 0;
+		c.line = line;
+		c.tab = tab;
+		c.offset = offset;
+
+		if (c.value == ']') {
+			type = PLAIN;
+		}
+		c.type = type;
+
+		/* --- set character */
+
 		chars[i] = c;
+
+		/* --- post character checks */
+
+		if (c.value == '[') {
+			type = SURROUND;
+		}
+
+		if (c.value == '\n') {
+			line++;
+			offset = i + 1;
+			tab = 0;
+		} else if (c.value == '\t') {
+			tab++;
+		}
 	}
 
 	batch->size += size;

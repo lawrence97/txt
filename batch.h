@@ -8,8 +8,11 @@ typedef struct {
 } Vector;
 
 typedef struct {
-	unsigned int value;
-	unsigned int type;
+	int value;
+	int type;
+	int line;
+	int tab;
+	int offset;
 } Character;
 
 typedef struct {
@@ -19,8 +22,8 @@ typedef struct {
 	size_t size;
 } Batch;
 
-Batch newBatch(size_t capacity);
-void newString(Batch *batch, char *string, size_t size);
+Batch newBatch(size_t capacity, GLuint shader);
+void stringBatch(Batch *batch, char *string, size_t size);
 void updateBatch(Batch *batch);
 void drawBatch(size_t size);
 void clearBatch(Batch *batch);

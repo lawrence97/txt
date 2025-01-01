@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "defines.h"
 #include "util.h"
-
-#define PRINT true
 
 GLuint newTexture(char *path) {
 
 	int w, h, n;
+	stbi_set_flip_vertically_on_load(1);
 	stbi_uc *pixels = stbi_load(path, &w, &h, &n, 0);
 	if (pixels == NULL) {
 		return 0;
