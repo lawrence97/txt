@@ -39,8 +39,12 @@ void runTxt(Txt *txt) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	char *str = "long\ttab\na[text]b";
-	stringBatch(&_batch, str, strlen(str));
+	Character trace;
+	char *str = "long\ttab\na[text]b. New sentence.";
+	trace = stringBatch(&_batch, str, 18, (Character){0});
+	trace = stringBatch(&_batch, &str[18], strlen(str) - 18, trace);
+	char *info = "filename.ext";
+	trace = stringBatch(&_batch, info, strlen(info), (Character){.line = 28, .tab = 5, 0});
 	updateBatch(&_batch);
 
 	while (!glfwWindowShouldClose(_window)) {

@@ -23,7 +23,7 @@ typedef struct {
 } Batch;
 
 Batch newBatch(size_t capacity, GLuint shader);
-void stringBatch(Batch *batch, char *string, size_t size);
+Character stringBatch(Batch *batch, char *string, size_t size, Character previous);
 void updateBatch(Batch *batch);
 void drawBatch(size_t size);
 void clearBatch(Batch *batch);

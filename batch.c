@@ -58,18 +58,18 @@ Batch newBatch(size_t capacity, GLuint shader) {
 	return bat;
 }
 
-void stringBatch(Batch *batch, char *string, size_t size) {
-
-	Character c = {0};
+Character stringBatch(Batch *batch, char *string, size_t size, Character trace) {
 
 	if (size > MAX_CHARACTERS) {
 		size = MAX_CHARACTERS;
 	}
 
-	int type = PLAIN;
-	int line = 0;
-	int tab = 0;
-	int offset = 0;
+	int type = trace.type;
+	int line = trace.line;
+	int tab = trace.tab;
+	int offset = trace.offset;
+
+	Character c = {0};
 
 	for (int i = 0; i < size; i++) {
 
@@ -80,25 +80,25 @@ void stringBatch(Batch *batch, char *string, size_t size) {
 		c.tab = tab;
 		c.offset = offset;
 
-		if (c.value == ']') {
+		if (c.value == ']' || c.value == ')' || c.value == '}') {
 			type = PLAIN;
 		}
 		c.type = type;
 
 		/* --- set character */
 
-		chars[i] = c;
+		chars[batch->size + i] = c;
 
 		/* --- post character checks */
 
-		if (c.value == '[') {
+		if (c.value == '[' || c.value == '(' || c.value == '{') {
 			type = SURROUND;
 		}
 
 		if (c.value == '\n') {
 			line++;
-			offset = i + 1;
-			tab = 0;
+			offset += i + 1;
+			tab = trace.tab;
 		} else if (c.value == '\t') {
 			tab++;
 		}
@@ -106,7 +106,7 @@ void stringBatch(Batch *batch, char *string, size_t size) {
 
 	batch->size += size;
 
-	return;
+	return c;
 }
 
 void updateBatch(Batch *batch) {
