@@ -7,6 +7,8 @@ set(SOURCES
 	txt.c
 	util.c
 	batch.c
+	handle.c
+	func.c
 )
 
 set(GLAD ${CMAKE_SOURCE_DIR}/lib/glad.c)

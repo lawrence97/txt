@@ -1,5 +1,5 @@
 #include "batch.h"
-#include "defines.h"
+#include "define.h"
 
 static Character chars[MAX_CHARACTERS];
 

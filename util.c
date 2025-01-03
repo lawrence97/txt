@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "defines.h"
+#include "define.h"
 #include "util.h"
 
 GLuint newTexture(char *path) {

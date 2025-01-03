@@ -2,12 +2,14 @@
 
 #include "util.h"
 #include "batch.h"
+#include "handle.h"
 
 typedef struct {
 	GLFWwindow *window;
 	GLuint shader;
 	GLuint texture;
 	Batch batch;
+	Handler handler;
 } Txt;
 
 int initialiseTxt(Txt *txt);

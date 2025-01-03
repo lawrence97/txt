@@ -1,7 +1,8 @@
 #include <string.h>
 
 #include "batch.h"
-#include "defines.h"
+#include "define.h"
+#include "handle.h"
 #include "txt.h"
 #include "util.h"
 
@@ -33,6 +34,13 @@ void runTxt(Txt *txt) {
 
 	GLFWwindow *_window = txt->window;
 	Batch _batch = txt->batch;
+
+	txt->handler = (Handler){.mode = NORMAL, .keyptr = handleKey, .charptr = handleChar};
+
+	glfwSwapInterval(1);
+	glfwSetWindowUserPointer(txt->window, txt);
+	glfwSetKeyCallback(txt->window, txt->handler.keyptr);
+	glfwSetCharCallback(txt->window, txt->handler.charptr);
 
 	glClearColor(.2f, .2f, .3f, 1.0f);
 	glViewport(0, 0, WIDTH, HEIGHT);
